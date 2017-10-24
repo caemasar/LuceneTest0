@@ -1,5 +1,6 @@
 package idv.caemasar.lucene.v1;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
@@ -13,8 +14,8 @@ public class LuceneTester {
 
 	private static Logger logger = LogManager.getLogger(LuceneTester.class);
 
-	private String indexDir = "Lucene\\Index";
-	private String dataDir = "Lucene\\Data";
+	private static String indexDir = "Lucene\\Index";
+	private static String dataDir = "Lucene\\Data";
 	private Indexer indexer;
 	private Searcher searcher;
 
@@ -22,6 +23,12 @@ public class LuceneTester {
 		LuceneTester tester;
 		try {
 			tester = new LuceneTester();
+			File fileIndex = new File(indexDir);
+			if (deleteDir(fileIndex)) {
+				fileIndex.mkdir();
+			} else {
+				fileIndex.mkdir();
+			}
 			tester.createIndex();
 			tester.search("fuck_lucene");
 		} catch (IOException e) {
@@ -29,6 +36,25 @@ public class LuceneTester {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * 删除文件目录下的所有文件
+	 * 
+	 * @param file
+	 *            要删除的文件目录
+	 * @return 如果成功，返回true.
+	 */
+	public static boolean deleteDir(File file) {
+		if (file.isDirectory()) {
+			File[] files = file.listFiles();
+			for (int i = 0; i < files.length; i++) {
+				deleteDir(files[i]);
+			}
+		}
+		file.delete();
+		logger.debug("目录："+file.getName()+"已删除");
+		return true;
 	}
 
 	private void createIndex() throws IOException {
