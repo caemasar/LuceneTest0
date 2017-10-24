@@ -1,4 +1,4 @@
-package idv.caemasar.lucene;
+package idv.caemasar.lucene.v1;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

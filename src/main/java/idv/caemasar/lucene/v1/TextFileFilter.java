@@ -1,4 +1,4 @@
-package idv.caemasar.lucene;
+package idv.caemasar.lucene.v1;
 
 import java.io.File;
 import java.io.FileFilter;
