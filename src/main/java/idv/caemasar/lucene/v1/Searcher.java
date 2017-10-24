@@ -10,11 +10,13 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -50,6 +52,22 @@ public class Searcher {
 
 	public TopDocs search(String searchQuery) throws IOException, ParseException {
 		query = queryParser.parse(searchQuery);
+		return indexSearcher.search(query, LuceneConstants.MAX_SEARCH);
+	}
+
+	public TopDocs searchTxt(String searchQuery) throws IOException, ParseException {
+		// query = queryParser.parse(searchQuery);
+		Term t = new Term(LuceneConstants.TXT, searchQuery);
+		// HashSet<Term> set = new HashSet<>();
+		query = new TermQuery(t);
+		return indexSearcher.search(query, LuceneConstants.MAX_SEARCH);
+	}
+
+	public TopDocs searchNum(String searchQuery) throws IOException, ParseException {
+		// query = queryParser.parse(searchQuery);
+		Term t = new Term("num", searchQuery);
+		// HashSet<Term> set = new HashSet<>();
+		query = new TermQuery(t);
 		return indexSearcher.search(query, LuceneConstants.MAX_SEARCH);
 	}
 

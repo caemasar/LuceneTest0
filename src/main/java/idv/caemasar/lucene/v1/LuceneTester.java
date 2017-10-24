@@ -44,15 +44,27 @@ public class LuceneTester {
 	private void search(String searchQuery) throws IOException, ParseException {
 		searcher = new Searcher(indexDir);
 		long startTime = System.currentTimeMillis();
-		TopDocs hits = searcher.search(searchQuery);
+		TopDocs hits = searcher.searchTxt(searchQuery);
 		long endTime = System.currentTimeMillis();
 
 		logger.debug(hits.totalHits + " documents found. Time :" + (endTime - startTime));
 		for (ScoreDoc scoreDoc : hits.scoreDocs) {
 			Document doc = searcher.getDocument(scoreDoc);
 			logger.debug("\n------------------------S------------------------");
-			// logger.debug("\ncontent: " + doc.get(LuceneConstants.CONTENT));
-			logger.debug("\ncontents: " + doc.get(LuceneConstants.CONTENTS));
+			logger.debug("\ntxt: " + doc.get(LuceneConstants.TXT));
+			logger.debug("\nFile: " + doc.get(LuceneConstants.FILE_PATH));
+			logger.debug("\n------------------------E------------------------");
+		}
+		logger.debug("\n=================================================");
+		startTime = System.currentTimeMillis();
+		hits = searcher.searchNum("0");
+		endTime = System.currentTimeMillis();
+
+		logger.debug(hits.totalHits + " documents found. Time :" + (endTime - startTime));
+		for (ScoreDoc scoreDoc : hits.scoreDocs) {
+			Document doc = searcher.getDocument(scoreDoc);
+			logger.debug("\n------------------------S------------------------");
+			logger.debug("\nnum: " + doc.get("num"));
 			logger.debug("\nFile: " + doc.get(LuceneConstants.FILE_PATH));
 			logger.debug("\n------------------------E------------------------");
 		}

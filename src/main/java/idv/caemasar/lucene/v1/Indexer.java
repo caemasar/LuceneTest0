@@ -1,5 +1,6 @@
 package idv.caemasar.lucene.v1;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileReader;
@@ -67,53 +68,65 @@ public class Indexer {
 		// 以上这种方式存进去的field是整的，查找不到
 
 		// index file contents
-		Field contentReaderField = new TextField(LuceneConstants.CONTENTS, fr);
+		TextField contentReaderField = new TextField(LuceneConstants.CONTENTS, fr);
 
 		// 以下这种方式把内容放进去也是查不到的
-		// BufferedReader br = new BufferedReader(fr);
-		// String s = null;
-		// StringBuffer sb = new StringBuffer();
-		// int i = 0;
-		//
-		// while ((s = br.readLine()) != null) {
-		// logger.debug(i + ":::" + s);
-		// sb.append(s);
-		// i++;
-		// }
-		//
-		// Field contentField = new Field(LuceneConstants.TXT, sb.toString(),
-		// Field.Store.YES, Field.Index.NOT_ANALYZED);
+		BufferedReader br = new BufferedReader(fr);
+		String s = null;
+		String sresult = "";
+
+		while ((s = br.readLine()) != null) {
+			sresult = sresult + "\n" + s;
+		}
+		logger.debug(sresult);
+		TextField contentField = new TextField(LuceneConstants.TXT, sresult, Field.Store.YES);
 		// 以上这种方式把内容放进去也是查不到的
 
 		// index file name
-		Field fileNameField = new TextField(LuceneConstants.FILE_NAME, file.getName(), Field.Store.YES);
+		TextField fileNameField = new TextField(LuceneConstants.FILE_NAME, file.getName(), Field.Store.YES);
 
 		// index file path
-		Field filePathField = new TextField(LuceneConstants.FILE_PATH, file.getCanonicalPath(), Field.Store.YES);
+		TextField filePathField = new TextField(LuceneConstants.FILE_PATH, file.getCanonicalPath(), Field.Store.YES);
 		document.add(contentReaderField);
 		document.add(fileNameField);
 		document.add(filePathField);
-		// document.add(contentField);
+		document.add(contentField);
+		logger.debug(document.get(LuceneConstants.TXT));
 		// fr.close();
 
 		return document;
 	}
 
+	private Document getDocument(File file, int i) throws IOException {
+		Document document = getDocument(file);
+		TextField numField = new TextField("num", String.valueOf(i), Field.Store.YES);
+		document.add(numField);
+		return document;
+	}
+
+	@SuppressWarnings("unused")
 	private void indexFile(File file) throws IOException {
 		logger.debug("Indexing " + file.getCanonicalPath());
 		Document document = getDocument(file);
 		writer.addDocument(document);
 	}
 
+	private void indexFile(File file, int i) throws IOException {
+		logger.debug("Indexing " + file.getCanonicalPath());
+		Document document = getDocument(file, i);
+		writer.addDocument(document);
+	}
+
 	public int createIndex(String dataDirPath, FileFilter filter) throws IOException {
 		// get all files in the data directory
 		File[] files = new File(dataDirPath).listFiles();
-
-		for (File file : files) {
-			if (!file.isDirectory() && !file.isHidden() && file.exists() && file.canRead() && filter.accept(file)) {
-				indexFile(file);
+		for (int i = 0; i < files.length; i++) {
+			if (!files[i].isDirectory() && !files[i].isHidden() && files[i].exists() && files[i].canRead()
+					&& filter.accept(files[i])) {
+				indexFile(files[i], (i % 2));
 			}
 		}
 		return writer.numDocs();
 	}
+
 }
