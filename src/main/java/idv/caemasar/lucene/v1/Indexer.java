@@ -7,11 +7,14 @@ import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
@@ -32,14 +35,16 @@ public class Indexer {
 
 	private IndexWriter writer;
 
-	@SuppressWarnings("deprecation")
 	public Indexer(String indexDirectoryPath) throws IOException {
+
+		Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_40);
+
 		// this directory will contain the indexes
 		Directory indexDirectory = FSDirectory.open(new File(indexDirectoryPath));
 
+		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_40, analyzer);
 		// create the indexer
-		writer = new IndexWriter(indexDirectory, new StandardAnalyzer(Version.LUCENE_33), true,
-				IndexWriter.MaxFieldLength.UNLIMITED);
+		writer = new IndexWriter(indexDirectory, config);
 	}
 
 	public void close() throws CorruptIndexException, IOException {
@@ -62,7 +67,7 @@ public class Indexer {
 		// 以上这种方式存进去的field是整的，查找不到
 
 		// index file contents
-		Field contentReaderField = new Field(LuceneConstants.CONTENTS, fr);
+		Field contentReaderField = new TextField(LuceneConstants.CONTENTS, fr);
 
 		// 以下这种方式把内容放进去也是查不到的
 		// BufferedReader br = new BufferedReader(fr);
@@ -81,12 +86,10 @@ public class Indexer {
 		// 以上这种方式把内容放进去也是查不到的
 
 		// index file name
-		Field fileNameField = new Field(LuceneConstants.FILE_NAME, file.getName(), Field.Store.YES,
-				Field.Index.NOT_ANALYZED);
+		Field fileNameField = new TextField(LuceneConstants.FILE_NAME, file.getName(), Field.Store.YES);
 
 		// index file path
-		Field filePathField = new Field(LuceneConstants.FILE_PATH, file.getCanonicalPath(), Field.Store.YES,
-				Field.Index.NOT_ANALYZED);
+		Field filePathField = new TextField(LuceneConstants.FILE_PATH, file.getCanonicalPath(), Field.Store.YES);
 		document.add(contentReaderField);
 		document.add(fileNameField);
 		document.add(filePathField);

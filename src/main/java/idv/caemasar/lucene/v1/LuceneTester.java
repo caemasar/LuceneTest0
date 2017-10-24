@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 
@@ -51,7 +51,7 @@ public class LuceneTester {
 		for (ScoreDoc scoreDoc : hits.scoreDocs) {
 			Document doc = searcher.getDocument(scoreDoc);
 			logger.debug("\n------------------------S------------------------");
-//			logger.debug("\ncontent: " + doc.get(LuceneConstants.CONTENT));
+			// logger.debug("\ncontent: " + doc.get(LuceneConstants.CONTENT));
 			logger.debug("\ncontents: " + doc.get(LuceneConstants.CONTENTS));
 			logger.debug("\nFile: " + doc.get(LuceneConstants.FILE_PATH));
 			logger.debug("\n------------------------E------------------------");
