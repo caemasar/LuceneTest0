@@ -29,6 +29,7 @@ import org.apache.poi.hwpf.usermodel.Range;
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
+
 /**
  * 
  * 创建时间: 2017年10月24日 下午12:26:29
@@ -51,10 +52,11 @@ public class IndexManager {
 	private static IndexWriter indexWriter = null;
 
 	/**
-	 * 创建索引管理器
+	 * 创建索引管理器,单例
 	 * 
 	 * @return 返回索引管理器对象
 	 */
+	@SuppressWarnings("static-access")
 	public IndexManager getManager() {
 		if (indexManager == null) {
 			this.indexManager = new IndexManager();
@@ -96,14 +98,14 @@ public class IndexManager {
 			System.out.println();
 
 			try {
-				analyzer = new StandardAnalyzer(Version.LUCENE_CURRENT);
+				analyzer = new StandardAnalyzer(Version.LUCENE_40);
 				directory = FSDirectory.open(new File(INDEX_DIR));
 
 				File indexFile = new File(INDEX_DIR);
 				if (!indexFile.exists()) {
 					indexFile.mkdirs();
 				}
-				IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_CURRENT, analyzer);
+				IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_40, analyzer);
 				indexWriter = new IndexWriter(directory, config);
 
 				Document document = new Document();
