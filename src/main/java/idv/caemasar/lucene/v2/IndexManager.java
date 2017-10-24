@@ -29,7 +29,17 @@ import org.apache.poi.hwpf.usermodel.Range;
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
-
+/**
+ * 
+ * 创建时间: 2017年10月24日 下午12:26:29
+ * 
+ * 描述: IndexManager.java
+ *
+ * Lucene4.0版本测试demo
+ * 
+ * @author Caemasar
+ * @version 1.0
+ */
 public class IndexManager {
 	private static IndexManager indexManager;
 	private static String content = "";

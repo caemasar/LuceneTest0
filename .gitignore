@@ -15,4 +15,4 @@ build
 # My configurations:
 db.ini
 deploy_key_rsa
-Lucene/Index
+/Lucene/Index/
