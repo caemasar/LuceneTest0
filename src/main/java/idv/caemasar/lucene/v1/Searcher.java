@@ -11,6 +11,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
@@ -58,8 +59,14 @@ public class Searcher {
 	public TopDocs searchTxt(String searchQuery) throws IOException, ParseException {
 		// query = queryParser.parse(searchQuery);
 		Term t = new Term(LuceneConstants.TXT, searchQuery);
+		Term t2 = new Term("num", "0");
+		String[] queries = { "txt", "num" };
+		String[] fields = { searchQuery, "0" };
+		query = MultiFieldQueryParser.parse(Version.LUCENE_40, fields, queries,
+				new StandardAnalyzer(Version.LUCENE_40));
+		System.out.println(query);
 		// HashSet<Term> set = new HashSet<>();
-		query = new TermQuery(t);
+		// query = new TermQuery(t);
 		return indexSearcher.search(query, LuceneConstants.MAX_SEARCH);
 	}
 
