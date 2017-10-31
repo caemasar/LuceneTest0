@@ -74,26 +74,26 @@ public class IndexManager {
 	public static boolean createIndex(String path) {
 		Date date1 = new Date();
 		List<File> fileList = getFileList(path);
-		for (File file : fileList) {
+		for (int i = 0; i < fileList.size(); i++) {
 			content = "";
 			// 获取文件后缀
-			String type = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+			String type = fileList.get(i).getName().substring(fileList.get(i).getName().lastIndexOf(".") + 1);
 			if ("txt".equalsIgnoreCase(type)) {
 
-				content += txt2String(file);
+				content += txt2String(fileList.get(i));
 
 			} else if ("doc".equalsIgnoreCase(type)) {
 
-				content += doc2String(file);
+				content += doc2String(fileList.get(i));
 
 			} else if ("xls".equalsIgnoreCase(type)) {
 
-				content += xls2String(file);
+				content += xls2String(fileList.get(i));
 
 			}
 
-			System.out.println("name :" + file.getName());
-			System.out.println("path :" + file.getPath());
+			System.out.println("name :" + fileList.get(i).getName());
+			System.out.println("path :" + fileList.get(i).getPath());
 			// System.out.println("content :"+content);
 			System.out.println();
 
@@ -109,9 +109,10 @@ public class IndexManager {
 				indexWriter = new IndexWriter(directory, config);
 
 				Document document = new Document();
-				document.add(new TextField("filename", file.getName(), Store.YES));
+				document.add(new TextField("filename", fileList.get(i).getName(), Store.YES));
 				document.add(new TextField("content", content, Store.YES));
-				document.add(new TextField("path", file.getPath(), Store.YES));
+				document.add(new TextField("num", String.valueOf(i % 2), Store.YES));
+				document.add(new TextField("path", fileList.get(i).getPath(), Store.YES));
 				indexWriter.addDocument(document);
 				indexWriter.commit();
 				closeWriter();
