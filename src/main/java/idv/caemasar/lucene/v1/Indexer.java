@@ -91,6 +91,7 @@ public class Indexer {
 		document.add(fileNameField);
 		document.add(filePathField);
 		document.add(contentField);
+		document.add(new TextField("koon", " ", Field.Store.YES));
 		logger.debug(document.get(LuceneConstants.TXT));
 		// fr.close();
 
