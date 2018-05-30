@@ -59,9 +59,11 @@ public class Searcher {
 	public TopDocs searchTxt(String searchQuery) throws IOException, ParseException {
 		// query = queryParser.parse(searchQuery);
 		Term t = new Term(LuceneConstants.TXT, searchQuery);
-		Term t2 = new Term("num", "0");
-		String[] queries = { "txt", "num" };
-		String[] fields = { searchQuery, "0" };
+//		Term t2 = new Term("num", "0");
+//		String[] queries = { "txt", "num" };
+//		String[] fields = { searchQuery, "0" };
+		String[] queries = { "txt"};
+		String[] fields = { searchQuery};
 		query = MultiFieldQueryParser.parse(Version.LUCENE_40, fields, queries,
 				new StandardAnalyzer(Version.LUCENE_40));
 		System.out.println(query);
